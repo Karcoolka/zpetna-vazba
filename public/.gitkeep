@@ -1,0 +1,2 @@
+# This file ensures the public directory is tracked in git
+# The widgets subdirectory will contain dynamically generated JavaScript files 

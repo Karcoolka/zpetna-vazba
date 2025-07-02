@@ -1,0 +1,109 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zpetna-vazba-deployment
+  labels:
+    app: zpetna-vazba
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: zpetna-vazba
+  template:
+    metadata:
+      labels:
+        app: zpetna-vazba
+    spec:
+      containers:
+      - name: zpetna-vazba
+        image: zpetna-vazba-system:latest
+        ports:
+        - containerPort: 3000
+        env:
+        - name: NODE_ENV
+          value: "production"
+        - name: JWT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: zpetna-vazba-secrets
+              key: jwt-secret
+        - name: SESSION_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: zpetna-vazba-secrets
+              key: session-secret
+        - name: DB_PATH
+          value: "/app/data/database.sqlite"
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 3000
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 3000
+          initialDelaySeconds: 5
+          periodSeconds: 5
+        volumeMounts:
+        - name: data-volume
+          mountPath: /app/data
+        - name: logs-volume
+          mountPath: /app/logs
+        - name: widgets-volume
+          mountPath: /app/public/widgets
+      volumes:
+      - name: data-volume
+        persistentVolumeClaim:
+          claimName: zpetna-vazba-data-pvc
+      - name: logs-volume
+        persistentVolumeClaim:
+          claimName: zpetna-vazba-logs-pvc
+      - name: widgets-volume
+        persistentVolumeClaim:
+          claimName: zpetna-vazba-widgets-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: zpetna-vazba-service
+spec:
+  selector:
+    app: zpetna-vazba
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3000
+  type: ClusterIP
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: zpetna-vazba-ingress
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+spec:
+  tls:
+  - hosts:
+    - your-domain.com
+    secretName: zpetna-vazba-tls
+  rules:
+  - host: your-domain.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: zpetna-vazba-service
+            port:
+              number: 80 

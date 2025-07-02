@@ -1,0 +1,28 @@
+version: '3.8.1'
+
+services:
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - JWT_SECRET=your-super-secret-jwt-key-change-this-in-production
+      - DB_PATH=/app/data/database.sqlite
+      - SESSION_SECRET=your-super-secret-session-key-change-this-in-production
+    volumes:
+      - app_data:/app/data
+      - app_logs:/app/logs
+      - app_widgets:/app/public/widgets
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+volumes:
+  app_data:
+  app_logs:
+  app_widgets: 
