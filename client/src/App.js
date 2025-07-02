@@ -291,7 +291,7 @@ const Navigation = () => {
 const Dashboard = () => {
   return (
     <div style={{ padding: '20px' }}>
-      <h3>Vítejte v systému zpětné vazby!</h3>
+      <h3 style={{ color: '#BFFF00' }}>Vítejte v systému zpětné vazby!</h3>
       <p>Základní funkcionalita aplikace:</p>
       <ul>
         <li><strong>Survey Creator</strong> - Vytvářejte nové dotazníky</li>
