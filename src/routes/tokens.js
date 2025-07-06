@@ -1162,7 +1162,7 @@ const generateWidgetImplementation = (tokenId, survey) => {
               font-size: 20px;
               line-height: 150%;
               letter-spacing: 3%;
-              color: #368537;
+              color: 'var(--color-green)';
             ">Zpět</button>
 
             <!-- Submit Button -->
@@ -1285,7 +1285,7 @@ const generateWidgetImplementation = (tokenId, survey) => {
         padding: 40px;
         font-family: 'Roboto', sans-serif;
       ">
-        <h2 class="\${uniquePrefix}success_title" style="color: #28a745; margin-bottom: 16px;">✓ Zpětná vazba odeslána</h2>
+        <h2 class="\${uniquePrefix}success_title" style="color:'var(--color-green)'; margin-bottom: 16px;">✓ Zpětná vazba odeslána</h2>
         <p class="\${uniquePrefix}success_message" style="color: #666; margin-bottom: 24px;">Děkujeme za vaši zpětnou vazbu!</p>
         <button id="\${uniquePrefix}close_survey_btn" class="\${uniquePrefix}close_final_btn" style="
           padding: 12px 24px;

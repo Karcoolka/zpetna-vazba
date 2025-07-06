@@ -1,0 +1,209 @@
+:root {
+  --color-green: #609352;
+  --color-red: #dc3545;
+  --color-yellow: #FAC615;
+  --color-blue: #0d6efd;
+  --color-gray: #767676;
+  --color-tag-text-green: #368537;
+  --color-tag-text-red: #B32222 ;
+  --color-tag-text-yellow: #6B4A0D;
+  --color-tag-text-blue: #1E5086;
+  --color-tag-text-gray: #767676;
+  --color-tag-bg-green: #E8F5E4;
+  --color-tag-bg-red: #FDE3E3 ;
+  --color-tag-bg-yellow: #FEF7C3;
+  --color-tag-bg-blue: #E5EEF9;
+  --color-tag-bg-gray: #767676;
+}
+
+/* Global Custom CSS Classes */
+
+/* Import Roboto font from Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
+
+/* Apply Roboto font to all elements */
+* {
+  font-family: 'Roboto', sans-serif;
+}
+
+body {
+  font-family: 'Roboto', sans-serif;
+}
+
+.button-confirm {
+  background: var(--color-green);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 24px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.button-confirm:hover {
+  background: #2d6b2e;
+}
+
+.button-confirm:disabled {
+  background: #6c757d;
+  cursor: not-allowed;
+}
+
+/* Dashboard Styles */
+.dashboard-container {
+  padding: 40px;
+  max-width: 800px;
+  margin: 20px auto;
+  background-color: #f8f9fa;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e9ecef;
+}
+
+.dashboard-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.dashboard-title {
+  color: var(--color-green);
+  font-size: 32px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  letter-spacing: -0.5px;
+}
+
+.dashboard-subtitle {
+  color: #6c757d;
+  font-size: 18px;
+  margin: 0;
+  line-height: 1.6;
+}
+
+.dashboard-content {
+  background-color: white;
+  border-radius: 12px;
+  padding: 32px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+  border: 1px solid #f1f3f4;
+}
+
+.dashboard-section-title {
+  color: #495057;
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 24px;
+  border-bottom: 2px solid #e9ecef;
+  padding-bottom: 12px;
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.dashboard-card {
+  padding: 20px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.dashboard-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.dashboard-card-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.dashboard-card-icon {
+  font-size: 24px;
+}
+
+.dashboard-card-title {
+  color: var(--color-green);
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.dashboard-card-description {
+  color: #6c757d;
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.5;
+} 
+
+button {
+  border-radius: 8px !important;
+}
+
+.profile-form {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.profile-form h2 {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 18px;
+  letter-spacing: -1px;
+}
+
+.profile-form h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 10px;
+  color: #222;
+}
+
+.profile-label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 500;
+  color: #444;
+  font-size: 1rem;
+}
+
+.profile-hint {
+  color: #6c757d;
+  font-size: 14px;
+  margin-bottom: 15px;
+}
+
+.profile-input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1.5px solid #ced4da;
+  border-radius: 6px;
+  font-size: 1rem;
+  background: #fafbfc;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  margin-bottom: 2px;
+}
+
+.profile-input:focus {
+  border-color: var(--color-green);
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(54,133,55,0.08);
+}
+
+.profile-save-btn {
+  margin-top: 10px;
+  width: 100%;
+  font-size: 1.1rem;
+  font-weight: 600;
+  border-radius: 8px;
+  padding: 12px 0;
+  box-shadow: 0 2px 8px rgba(54,133,55,0.08);
+  letter-spacing: 0.5px;
+}

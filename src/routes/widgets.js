@@ -43,7 +43,7 @@ router.get('/:tokenId/survey', [
           <meta name="viewport" content="width=device-width, initial-scale=1">
           <style>
             body { font-family: Arial, sans-serif; text-align: center; padding: 50px; }
-            .error { color: #dc3545; }
+            .error { color: var(--color-red); }
           </style>
         </head>
         <body>
@@ -66,7 +66,7 @@ router.get('/:tokenId/survey', [
           <meta name="viewport" content="width=device-width, initial-scale=1">
           <style>
             body { font-family: Arial, sans-serif; text-align: center; padding: 50px; }
-            .warning { color: #ffc107; }
+            .warning { color: var(--color-yellow); }
           </style>
         </head>
         <body>
@@ -87,7 +87,7 @@ router.get('/:tokenId/survey', [
           <meta name="viewport" content="width=device-width, initial-scale=1">
           <style>
             body { font-family: Arial, sans-serif; text-align: center; padding: 50px; }
-            .warning { color: #ffc107; }
+            .warning { color: var(--color-yellow); }
           </style>
         </head>
         <body>
@@ -426,7 +426,7 @@ const generateSurveyHtml = (title, config, tokenId) => {
         }
         
         .thank-you h2 {
-            color: #28a745;
+            color:'var(--color-green)';
             margin-bottom: 20px;
         }
     </style>

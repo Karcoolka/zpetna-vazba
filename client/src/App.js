@@ -113,7 +113,7 @@ const EmailConfirmation = () => {
           disabled={isLoading || confirmationCode.length !== 6}
           style={{ 
             padding: '10px 20px', 
-            backgroundColor: '#28a745', 
+            backgroundColor: 'var(--color-green)', 
             color: 'white', 
             border: 'none',
             width: '100%',
@@ -200,15 +200,41 @@ const Login = () => {
     <div style={{ padding: '20px', maxWidth: '400px', margin: '100px auto' }}>
       <h2>Zpětná vazba - Přihlášení</h2>
       <form onSubmit={handleSubmit}>
-        <div style={{ marginBottom: '10px' }}>
-          <label>Uživatelské jméno:</label>
-          <input type="text" name="username" required style={{ width: '100%', padding: '8px' }} />
+        <div style={{ marginBottom: '10px', marginTop: '20px', }}>
+          <input 
+            type="text" 
+            name="username" 
+            placeholder="Uživatelské jméno"
+            required 
+            style={{ 
+              width: '100%', 
+              height: '45px',
+              padding: '8px', 
+              borderRadius: '8px',
+              border: '1px solid #ced4da',
+              fontSize: '16px',
+              fontFamily: 'Roboto, sans-serif'
+            }} 
+          />
         </div>
         <div style={{ marginBottom: '10px' }}>
-          <label>Heslo:</label>
-          <input type="password" name="password" required style={{ width: '100%', padding: '8px' }} />
+          <input 
+            type="password" 
+            name="password" 
+            placeholder="Heslo"
+            required 
+            style={{ 
+              width: '100%', 
+              height: '45px',
+              padding: '8px', 
+              borderRadius: '8px',
+              border: '1px solid #ced4da',
+              fontSize: '16px',
+              fontFamily: 'Roboto, sans-serif'
+            }} 
+          />
         </div>
-        <button type="submit" style={{ padding: '10px 20px', backgroundColor: '#007bff', color: 'white', border: 'none' }}>
+        <button className='button-confirm' type="submit" style={{height: '45px', borderRadius: '0px'}}>
           Přihlásit se
         </button>
       </form>
@@ -220,16 +246,17 @@ const Login = () => {
 const Navigation = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const menuItems = [
-    { path: '/dashboard', label: 'Dashboard', visibleTo: 'all' },
-    { path: '/survey-creator', label: 'Survey Creator', visibleTo: 'all' },
-    { path: '/surveys', label: 'Survey List', visibleTo: 'all' },
-    { path: '/global-surveys', label: 'Global Surveys', visibleTo: 'admin' },
-    { path: '/tokens', label: 'Survey Tokenisation', visibleTo: 'all' },
-    { path: '/users', label: 'Users', visibleTo: 'admin' },
-    { path: '/logs', label: 'Logs', visibleTo: 'admin' },
-    { path: '/settings', label: 'Settings', visibleTo: 'all' }
+    { path: '/dashboard', label: 'Přehled', visibleTo: 'all' },
+    { path: '/survey-creator', label: 'Tvorba dotazníku', visibleTo: 'all' },
+    { path: '/surveys', label: 'Seznam dotazníků', visibleTo: 'all' },
+    { path: '/global-surveys', label: 'Globální dotazníky', visibleTo: 'admin' },
+    { path: '/tokens', label: 'Tokenizace dotazníků', visibleTo: 'all' },
+    { path: '/users', label: 'Uživatelé', visibleTo: 'admin' },
+    { path: '/logs', label: 'Záznamy', visibleTo: 'admin' },
+    { path: '/settings', label: 'Nastavení', visibleTo: 'all' }
   ];
 
   const filteredItems = menuItems.filter(item => 
@@ -256,29 +283,46 @@ const Navigation = () => {
           letterSpacing: '3.12%'
         }}>Zpětná vazba</h2>
         <div style={{ display: 'flex', gap: '15px' }}>
-          {filteredItems.map(item => (
-            <button
-              key={item.path}
-              onClick={() => navigate(item.path)}
-              style={{
-                background: 'none',
-                border: 'none',
-                color: '#007bff',
-                cursor: 'pointer',
-                padding: '5px 10px',
-                textDecoration: 'underline'
-              }}
-            >
-              {item.label}
-            </button>
-          ))}
+          {filteredItems.map(item => {
+            const isActive = location.pathname === item.path;
+            return (
+              <div
+                key={item.path}
+                onClick={() => navigate(item.path)}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  borderBottom: isActive ? '3px solid var(--color-green)' : 'none',
+                  cursor: 'pointer',
+                  padding: '5px 10px 8px 10px',
+                  textDecoration: 'none',
+                  fontWeight: isActive ? '600' : '400',
+                  transition: 'all 0.2s ease',
+                  fontFamily: 'Roboto, sans-serif',
+                  fontSize: '16px',
+                  marginBottom: '-20px'
+                }}
+              >
+                {item.label}
+              </div>
+            );
+          })}
         </div>
       </div>
       <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-        <span>Přihlášen jako: {user?.username} ({user?.role})</span>
+        <span>Přihlášen jako: {user?.username}</span>
+        <span style={{ 
+          padding: '4px 8px', 
+          borderRadius: '8px',
+          backgroundColor: user?.role === 'admin' ? 'var(--color-tag-bg-red)' : 'var(--color-tag-bg-green)',
+          color: user?.role === 'admin' ? '#B32222' : '#368537',
+          fontSize: '12px'
+        }}>
+          {user?.role}
+        </span>
         <button 
           onClick={logout}
-          style={{ padding: '5px 10px', backgroundColor: '#dc3545', color: 'white', border: 'none', borderRadius: '3px' }}
+          style={{ padding: '5px 10px', backgroundColor: 'var(--color-red)', color: 'white', border: 'none', borderRadius: '3px' }}
         >
           Odhlásit se
         </button>
@@ -289,18 +333,63 @@ const Navigation = () => {
 
 // Simple Dashboard Component
 const Dashboard = () => {
+  const { user } = useAuth();
+  const navigate = useNavigate();
+
+  const dashboardItems = [
+    { title: 'Tvorba dotazníku', desc: 'Vytvářejte nové dotazníky', icon: '📝', path: '/survey-creator', visibleTo: 'all' },
+    { title: 'Seznam dotazníků', desc: 'Spravujte existující dotazníky', icon: '📋', path: '/surveys', visibleTo: 'all' },
+    { title: 'Globální dotazníky', desc: 'Správa globálních sekcí (pouze admin)', icon: '🌐', path: '/global-surveys', visibleTo: 'admin' },
+    { title: 'Tokenizace dotazníků', desc: 'Vytvářejte embedovatelné widgety', icon: '🔗', path: '/tokens', visibleTo: 'all' },
+    { title: 'Uživatelé', desc: 'Správa uživatelů (pouze admin)', icon: '👥', path: '/users', visibleTo: 'admin' },
+    { title: 'Záznamy', desc: 'Audit trail (pouze admin)', icon: '📊', path: '/logs', visibleTo: 'admin' },
+    { title: 'Nastavení', desc: 'Osobní nastavení', icon: '⚙️', path: '/settings', visibleTo: 'all' }
+  ];
+
+  const filteredItems = dashboardItems.filter(item => 
+    item.visibleTo === 'all' || (item.visibleTo === 'admin' && user?.role === 'admin')
+  );
+
+  const handleCardClick = (path) => {
+    navigate(path);
+  };
+
   return (
-    <div style={{ padding: '20px' }}>
-      <h3 style={{ color: '#BFFF00' }}>Vítejte v systému zpětné vazby!</h3>
-      <p>Základní funkcionalita aplikace:</p>
-      <ul>
-        <li><strong>Survey Creator</strong> - Vytvářejte nové dotazníky</li>
-        <li><strong>Survey List</strong> - Spravujte existující dotazníky</li>
-        <li><strong>Survey Tokenisation</strong> - Vytvářejte embedovatelné widgety</li>
-        <li><strong>Users</strong> - Správa uživatelů (pouze admin)</li>
-        <li><strong>Logs</strong> - Audit trail (pouze admin)</li>
-        <li><strong>Settings</strong> - Osobní nastavení</li>
-      </ul>
+    <div className="dashboard-container">
+      <div className="dashboard-header">
+        <h2 className="dashboard-title">
+          Vítejte v systému zpětné vazby!
+        </h2>
+        <p className="dashboard-subtitle">
+          Váš kompletní nástroj pro vytváření a správu dotazníků
+        </p>
+      </div>
+      
+      <div className="dashboard-content">
+        <h3 className="dashboard-section-title">
+          Základní funkcionalita aplikace
+        </h3>
+        
+        <div className="dashboard-grid">
+          {filteredItems.map((item, index) => (
+            <div 
+              key={index} 
+              className="dashboard-card"
+              onClick={() => handleCardClick(item.path)}
+            >
+              <div className="dashboard-card-header">
+                <span className="dashboard-card-icon">{item.icon}</span>
+                <strong className="dashboard-card-title">
+                  {item.title}
+                </strong>
+              </div>
+              <p className="dashboard-card-description">
+                {item.desc}
+              </p>
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   );
 };
@@ -713,7 +802,7 @@ const SurveyCreator = ({ editingSurveyId = null, globalMode = false }) => {
   if (loadingSurvey) {
     return (
       <div style={{ padding: '20px', maxWidth: '1200px', margin: '0 auto', textAlign: 'center' }}>
-        <h2>Survey Creator</h2>
+        <h2>Tvorba dotazníku</h2>
         <div style={{ marginTop: '50px' }}>
           <div style={{ fontSize: '18px', marginBottom: '20px' }}>Načítání dotazníku...</div>
           <div style={{ fontSize: '14px', color: '#6c757d' }}>Prosím počkejte, než se načtou data dotazníku</div>
@@ -724,7 +813,7 @@ const SurveyCreator = ({ editingSurveyId = null, globalMode = false }) => {
 
   return (
     <div style={{ padding: '20px', maxWidth: '1200px', margin: '0 auto' }}>
-      <h2>{globalMode ? 'Správa globálních sekcí' : (isEditMode ? 'Editace dotazníku' : 'Survey Creator')}</h2>
+      <h2>{globalMode ? 'Správa globálních sekcí' : (isEditMode ? 'Editace dotazníku' : 'Tvorba dotazníku')}</h2>
       <p style={{ color: '#6c757d', marginBottom: '30px' }}>
         {globalMode 
           ? 'Upravte globální sekce "Úvodní sekce" a "Závěrečná sekce" sdílené napříč všemi průzkumy' 
@@ -806,14 +895,10 @@ const SurveyCreator = ({ editingSurveyId = null, globalMode = false }) => {
             <button 
               onClick={() => setCurrentStep(2)}
               disabled={!survey.title}
+              className="button-confirm"
               style={{ 
                 position: 'relative',
-                padding: '12px 24px',
-                backgroundColor: survey.title ? 'rgb(0, 123, 255)' : '#6c757d',
-                color: 'white',
-                border: 'none',
-                borderRadius: '4px',
-                fontSize: '16px',
+                backgroundColor: survey.title ? 'var(--color-green)' : '#6c757d',
                 cursor: survey.title ? 'pointer' : 'not-allowed'
               }}
             >
@@ -966,13 +1051,12 @@ const SurveyCreator = ({ editingSurveyId = null, globalMode = false }) => {
                 ← Zpět
               </button>
             )}
-            {globalMode ? (
               <button 
                 onClick={saveSurvey}
                 style={{ 
                   position: 'relative',
                   padding: '12px 24px',
-                  backgroundColor: '#28a745',
+                  backgroundColor: 'var(--color-green)',
                   color: 'white',
                   border: 'none',
                   borderRadius: '4px',
@@ -1037,7 +1121,7 @@ const SurveyCreator = ({ editingSurveyId = null, globalMode = false }) => {
               style={{ 
                 position: 'relative',
                 padding: '12px 24px',
-                backgroundColor: '#28a745',
+                backgroundColor: 'var(--color-green)',
                 color: 'white',
                 border: 'none',
                 borderRadius: '4px',
@@ -1108,7 +1192,7 @@ const SurveyStepCard = ({
       draggable={isInCanvas && canEdit}
       onDragStart={isInCanvas && canEdit ? (e) => onDragStart(e, index) : undefined}
       style={{
-        border: step.type === 'section-header' ? '2px solid #ffb74d' : '2px solid #dee2e6',
+        border: step.type === 'section-header' ? '2px solid #ffeaa7' : '2px solid #dee2e6',
         borderRadius: '8px',
         padding: step.type === 'section-header' ? '15px 20px' : '20px',
         marginBottom: '15px',
@@ -1247,7 +1331,7 @@ const SurveyStepCard = ({
               onClick={onDelete}
               style={{
                 padding: '6px 12px',
-                backgroundColor: '#dc3545',
+                backgroundColor: 'var(--color-red)',
                 color: 'white',
                 border: 'none',
                 borderRadius: '4px',
@@ -1262,14 +1346,14 @@ const SurveyStepCard = ({
           <div style={{ 
             display: 'flex', 
             alignItems: 'center',
-            color: '#dc3545',
+            color: 'var(--color-red)',
             fontSize: '16px',
             flexDirection: 'column',
             gap: '4px'
           }}>
             {step.isSystem || step.uneditable ? (
               <div style={{
-                backgroundColor: '#dc3545',
+                backgroundColor: 'var(--color-red)',
                 color: 'white',
                 borderRadius: '4px',
                 padding: '2px 6px',
@@ -1425,7 +1509,7 @@ const SurveyStepEditor = ({ step, onSave, onCancel }) => {
                     onClick={() => removeOption(index)}
                     style={{
                       padding: '8px 12px',
-                      backgroundColor: '#dc3545',
+                      backgroundColor: 'var(--color-red)',
                       color: 'white',
                       border: 'none',
                       borderRadius: '4px'
@@ -1456,7 +1540,7 @@ const SurveyStepEditor = ({ step, onSave, onCancel }) => {
                   onClick={addOption}
                   style={{
                     padding: '8px 16px',
-                    backgroundColor: '#28a745',
+                    backgroundColor: 'var(--color-green)',
                     color: 'white',
                     border: 'none',
                     borderRadius: '4px'
@@ -1662,7 +1746,7 @@ const SurveyStepEditor = ({ step, onSave, onCancel }) => {
               type="submit"
               style={{
                 padding: '10px 20px',
-                backgroundColor: '#007bff',
+                backgroundColor: 'var(--color-green)',
                 color: 'white',
                 border: 'none',
                 borderRadius: '4px'
@@ -2397,8 +2481,8 @@ const SurveyPreview = ({ survey, onClose }) => {
           ) : null;
         })}
       </div>
-    );
-  };
+  );
+};
 
 const renderFloatingWidget = (step) => (
   <div style={{ 
@@ -2670,7 +2754,7 @@ const renderScreenshotForm = () => (
           fontSize: '14px',
           lineHeight: '150%',
           letterSpacing: '1.25%',
-          color: '#368537'
+          color: 'var(--color-green)'
         }}>
           Nahrajte soubor
         </span>
@@ -3006,7 +3090,7 @@ return (
             paddingBottom: '13px',
             paddingLeft: '20px',
             borderRadius: '8px',
-            background: '#609352',
+            background: 'var(--color-green)',
             border: 'none',
             color: 'white',
             cursor: 'pointer',
@@ -3324,7 +3408,7 @@ const SurveyCanvas = ({ steps, onStepsChange, onEditStep, onDeleteStep, cardInfo
                 <span style={{ 
                   marginLeft: '8px', 
                   fontSize: '11px',
-                  backgroundColor: '#dc3545',
+                  backgroundColor: 'var(--color-red)',
                   color: 'white',
                   padding: '2px 6px',
                   borderRadius: '3px'
@@ -3539,7 +3623,7 @@ const SurveyCardManager = ({ survey, activeCardIndex, onActiveCardChange, onSurv
               alignItems: 'center',
               gap: '5px',
               padding: '8px 12px',
-              backgroundColor: '#28a745',
+              backgroundColor: 'var(--color-green)',
               color: 'white',
               border: 'none',
               borderRadius: '4px',
@@ -3549,7 +3633,7 @@ const SurveyCardManager = ({ survey, activeCardIndex, onActiveCardChange, onSurv
               transition: 'all 0.2s ease'
             }}
             onMouseEnter={(e) => e.target.style.backgroundColor = '#218838'}
-            onMouseLeave={(e) => e.target.style.backgroundColor = '#28a745'}
+            onMouseLeave={(e) => e.target.style.backgroundColor = 'var(--color-green)'}
             title="Přidat nový krok mezi uživatelské sekce"
           >
             ➕ Přidat krok
@@ -3706,7 +3790,7 @@ const CardTab = ({ card, index, isActive, canEdit, canDelete, isAdmin, onClick, 
                 <span style={{ 
                   marginLeft: '8px', 
                   fontSize: '12px',
-                  backgroundColor: '#dc3545',
+                  backgroundColor: 'var(--color-red)',
                   color: 'white',
                   padding: '2px 6px',
                   borderRadius: '3px'
@@ -3741,7 +3825,7 @@ const CardTab = ({ card, index, isActive, canEdit, canDelete, isAdmin, onClick, 
           </div>
           
           <div style={{ 
-            backgroundColor: isActive ? 'rgba(255,255,255,0.1)' : '#28a745',
+            backgroundColor: isActive ? 'rgba(255,255,255,0.1)' : 'var(--color-green)',
             color: 'white',
             borderRadius: '8px',
             padding: '1px 6px',
@@ -3779,7 +3863,7 @@ const CardTab = ({ card, index, isActive, canEdit, canDelete, isAdmin, onClick, 
               cursor: 'pointer',
               padding: '2px',
               borderRadius: '2px',
-              color: isActive ? 'rgba(255,255,255,0.8)' : '#dc3545'
+              color: isActive ? 'rgba(255,255,255,0.8)' : 'var(--color-red)'
             }}
             title="Smazat tento krok"
             onMouseEnter={(e) => e.target.style.backgroundColor = 'rgba(220, 53, 69, 0.1)'}
@@ -3909,11 +3993,21 @@ const SurveyList = () => {
 
   const getStatusColor = (status) => {
     switch (status) {
-      case 'active': return '#28a745';
-      case 'draft': return '#6c757d';
-      case 'paused': return '#ffc107';
-      case 'completed': return '#17a2b8';
-      default: return '#6c757d';
+      case 'active': return 'var(--color-tag-bg-green)';
+      case 'draft': return 'var(--color-tag-bg-yellow)';
+      case 'paused': return 'var(--color-tag-bg-red)';
+      case 'completed': return 'var(--color-tag-bg-blue)';
+      default: return 'var(--color-tag-bg-gray)';
+    }
+  };
+
+  const getStatusTextColor = (status) => {
+    switch (status) {
+      case 'active': return 'var(--color-tag-text-green)';
+      case 'draft': return 'var(--color-tag-text-yellow)';
+      case 'paused': return 'var(--color-tag-text-red)';
+      case 'completed': return 'var(--color-tag-text-blue)';
+      default: return 'var(--color-tag-text-gray)';
     }
   };
 
@@ -3954,26 +4048,45 @@ const SurveyList = () => {
       {surveys.length === 0 ? (
         <div style={{ textAlign: 'center', padding: '40px', color: '#6c757d' }}>
           <p>Žádné dotazníky nebyly nalezeny.</p>
-          <p>Začněte vytvořením nového dotazníku v Survey Creator.</p>
+          <p>Začněte vytvořením nového dotazníku v Tvorba dotazníku.</p>
         </div>
       ) : (
-        <div style={{ overflowX: 'auto' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: '10px' }}>
+        <div style={{ overflowX: 'auto', borderRadius: '8px' }}>
+          <table
+            style={{
+              width: '100%',
+              borderCollapse: 'collapse',
+              fontSize: '14px',
+              border: '1.5px solid #dee2e6',
+              borderRadius: '8px',
+              overflow: 'hidden'
+            }}
+          >
             <thead>
               <tr style={{ backgroundColor: '#f8f9fa' }}>
-                <th style={{ padding: '12px', textAlign: 'left', border: '1px solid #dee2e6', fontWeight: 'bold' }}>Název</th>
-                <th style={{ padding: '12px', textAlign: 'left', border: '1px solid #dee2e6', fontWeight: 'bold' }}>Vlastník</th>
-                <th style={{ padding: '12px', textAlign: 'left', border: '1px solid #dee2e6', fontWeight: 'bold' }}>Status</th>
-                <th style={{ padding: '12px', textAlign: 'center', border: '1px solid #dee2e6', fontWeight: 'bold' }}>Aktivní tokeny</th>
-                <th style={{ padding: '12px', textAlign: 'left', border: '1px solid #dee2e6', fontWeight: 'bold' }}>Vytvořeno</th>
-                <th style={{ padding: '12px', textAlign: 'left', border: '1px solid #dee2e6', fontWeight: 'bold' }}>Upraveno</th>
-                <th style={{ padding: '12px', textAlign: 'center', border: '1px solid #dee2e6', fontWeight: 'bold' }}>Akce</th>
+                <th style={{ padding: '12px', textAlign: 'left', minWidth: '150px', borderBottom: '1px solid #dee2e6' }}>Datum a čas</th>
+                <th style={{ padding: '12px', textAlign: 'left', borderBottom: '1px solid #dee2e6', fontWeight: 'bold' }}>Název</th>
+                <th style={{ padding: '12px', textAlign: 'left', borderBottom: '1px solid #dee2e6', fontWeight: 'bold' }}>Vlastník</th>
+                <th style={{ padding: '12px', textAlign: 'left', borderBottom: '1px solid #dee2e6', fontWeight: 'bold' }}>Status</th>
+                <th style={{ padding: '12px', textAlign: 'center', borderBottom: '1px solid #dee2e6', fontWeight: 'bold' }}>Aktivní tokeny</th>
+                <th style={{ padding: '12px', textAlign: 'left', borderBottom: '1px solid #dee2e6', fontWeight: 'bold' }}>Vytvořeno</th>
+                <th style={{ padding: '12px', textAlign: 'left', borderBottom: '1px solid #dee2e6', fontWeight: 'bold' }}>Upraveno</th>
+                <th style={{ padding: '12px', textAlign: 'center', borderBottom: '1px solid #dee2e6', fontWeight: 'bold' }}>Akce</th>
               </tr>
             </thead>
             <tbody>
-              {surveys.map(survey => (
+              {surveys.map((survey, idx) => (
                 <tr key={survey.id} style={{ backgroundColor: survey.id % 2 === 0 ? '#f9f9f9' : 'white' }}>
-                  <td style={{ padding: '12px', border: '1px solid #dee2e6' }}>
+                  <td style={{ padding: '12px', borderBottom: idx === surveys.length - 1 ? 'none' : '1px solid #dee2e6' }}>
+                    {new Date(survey.created_at).toLocaleString('cs-CZ')}
+                    <div style={{ fontSize: '11px', color: '#6c757d' }}>
+                      {new Date(survey.created_at).toLocaleTimeString('cs-CZ', {
+                        hour: '2-digit',
+                        minute: '2-digit'
+                      })}
+                    </div>
+                  </td>
+                  <td style={{ padding: '12px', borderBottom: idx === surveys.length - 1 ? 'none' : '1px solid #dee2e6' }}>
                     <div style={{ fontWeight: 'bold', marginBottom: '4px' }}>{survey.title}</div>
                     {survey.description && (
                       <div style={{ fontSize: '12px', color: '#6c757d', maxWidth: '200px', overflow: 'hidden', textOverflow: 'ellipsis' }}>
@@ -3981,31 +4094,31 @@ const SurveyList = () => {
                       </div>
                     )}
                   </td>
-                  <td style={{ padding: '12px', border: '1px solid #dee2e6' }}>
+                  <td style={{ padding: '12px', borderBottom: idx === surveys.length - 1 ? 'none' : '1px solid #dee2e6' }}>
                     <div style={{ fontWeight: 'bold' }}>{survey.owner_username}</div>
                     {user?.role === 'admin' && survey.user_id !== user.id && (
-                      <div style={{ fontSize: '11px', color: '#dc3545', fontWeight: 'bold' }}>CIZÍ</div>
+                      <div style={{ fontSize: '11px', color: 'var(--color-red)', fontWeight: 'bold' }}>CIZÍ</div>
                     )}
                   </td>
-                  <td style={{ padding: '12px', border: '1px solid #dee2e6' }}>
+                  <td style={{ padding: '12px', borderBottom: idx === surveys.length - 1 ? 'none' : '1px solid #dee2e6' }}>
                     <span style={{ 
                       padding: '4px 8px', 
-                      borderRadius: '12px',
+                      borderRadius: '8px',
                       backgroundColor: getStatusColor(survey.status),
-                      color: 'white',
+                      color: getStatusTextColor(survey.status),
                       fontSize: '12px',
                       fontWeight: 'bold'
                     }}>
                       {getStatusText(survey.status)}
                     </span>
                   </td>
-                  <td style={{ padding: '12px', border: '1px solid #dee2e6', textAlign: 'center' }}>
+                  <td style={{ padding: '12px', borderBottom: idx === surveys.length - 1 ? 'none' : '1px solid #dee2e6', textAlign: 'center' }}>
                     {survey.is_active ? (
                       <span style={{ 
                         padding: '4px 8px', 
-                        borderRadius: '12px',
-                        backgroundColor: '#28a745',
-                        color: 'white',
+                        borderRadius: '8px',
+                        backgroundColor: 'var(--color-tag-bg-green)',
+                        color: 'var(--color-tag-text-green)',
                         fontSize: '12px',
                         fontWeight: 'bold'
                       }}>
@@ -4014,10 +4127,11 @@ const SurveyList = () => {
                     ) : (
                       <span style={{ 
                         padding: '4px 8px', 
-                        borderRadius: '12px',
-                        backgroundColor: '#6c757d',
-                        color: 'white',
-                        fontSize: '12px'
+                        borderRadius: '8px',
+                        backgroundColor: 'var(--color-tag-bg-gray)',
+                        color: 'var(--color-tag-text-gray)',
+                        fontSize: '12px',
+                        fontWeight: 'bold'
                       }}>
                         NEAKTIVNÍ
                       </span>
@@ -4026,7 +4140,7 @@ const SurveyList = () => {
                       {survey.token_count || 0} tokenů
                     </div>
                   </td>
-                  <td style={{ padding: '12px', border: '1px solid #dee2e6', fontSize: '13px' }}>
+                  <td style={{ padding: '12px', borderBottom: idx === surveys.length - 1 ? 'none' : '1px solid #dee2e6', fontSize: '13px' }}>
                     {new Date(survey.created_at).toLocaleDateString('cs-CZ', {
                       day: '2-digit',
                       month: '2-digit',
@@ -4039,7 +4153,7 @@ const SurveyList = () => {
                       })}
                     </div>
                   </td>
-                  <td style={{ padding: '12px', border: '1px solid #dee2e6', fontSize: '13px' }}>
+                  <td style={{ padding: '12px', borderBottom: idx === surveys.length - 1 ? 'none' : '1px solid #dee2e6', fontSize: '13px' }}>
                     {new Date(survey.updated_at).toLocaleDateString('cs-CZ', {
                       day: '2-digit',
                       month: '2-digit',
@@ -4052,7 +4166,7 @@ const SurveyList = () => {
                       })}
                     </div>
                   </td>
-                  <td style={{ padding: '12px', border: '1px solid #dee2e6', textAlign: 'center' }}>
+                  <td style={{ padding: '12px', borderBottom: idx === surveys.length - 1 ? 'none' : '1px solid #dee2e6', textAlign: 'center' }}>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', alignItems: 'center' }}>
                       {(user?.role === 'admin' || survey.user_id === user?.id) && (
                         <>
@@ -4060,7 +4174,7 @@ const SurveyList = () => {
                             onClick={() => handleEdit(survey)}
                             style={{ 
                               padding: '4px 8px', 
-                              backgroundColor: '#ffc107', 
+                              backgroundColor: 'var(--color-yellow)', 
                               border: 'none', 
                               borderRadius: '3px',
                               fontSize: '12px',
@@ -4071,12 +4185,11 @@ const SurveyList = () => {
                           >
                             Upravit
                           </button>
-                          
                           <button 
                             onClick={() => handleDelete(survey.id, survey.title)}
                             style={{ 
                               padding: '4px 8px', 
-                              backgroundColor: '#dc3545', 
+                              backgroundColor: 'var(--color-red)', 
                               color: 'white', 
                               border: 'none', 
                               borderRadius: '3px',
@@ -4090,7 +4203,6 @@ const SurveyList = () => {
                           </button>
                         </>
                       )}
-                      
                       {user?.role !== 'admin' && survey.user_id !== user?.id && (
                         <span style={{ fontSize: '12px', color: '#6c757d', fontStyle: 'italic' }}>
                           Pouze zobrazení
@@ -4268,7 +4380,7 @@ const TokenList = () => {
   };
 
   const getStatusColor = (status) => {
-    return status === 'active' ? '#28a745' : '#6c757d';
+    return status === 'active' ? 'var(--color-green)' : 'var(--color-gray)';
   };
 
   const getStatusText = (status) => {
@@ -4293,7 +4405,7 @@ const TokenList = () => {
   return (
     <div style={{ padding: '20px' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-        <h2>Survey Tokenisation</h2>
+        <h2>Tokenizace doatazníků</h2>
         <div style={{ fontSize: '14px', color: '#6c757d' }}>
           {user?.role === 'admin' ? 'Zobrazeny všechny tokeny' : 'Zobrazeny vaše tokeny'}
         </div>
@@ -4322,7 +4434,7 @@ const TokenList = () => {
           onClick={() => setShowCreateForm(true)}
           style={{ 
             padding: '8px 16px', 
-            backgroundColor: '#28a745', 
+            backgroundColor: 'var(--color-green)', 
             color: 'white', 
             border: 'none', 
             borderRadius: '4px',
@@ -4422,7 +4534,7 @@ const TokenList = () => {
               </button>
               <button 
                 type="submit"
-                style={{ padding: '8px 16px', backgroundColor: '#007bff', color: 'white', border: 'none', borderRadius: '4px' }}
+                style={{ padding: '8px 16px', backgroundColor: 'var(--color-green)', color: 'white', border: 'none', borderRadius: '4px' }}
               >
                 Vytvořit token
               </button>
@@ -4437,8 +4549,14 @@ const TokenList = () => {
           <p>Začněte vytvořením nového tokenu pro embedování dotazníků.</p>
         </div>
       ) : (
-        <div style={{ overflowX: 'auto' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: '10px' }}>
+        <div style={{ overflowX: 'auto', borderRadius: '8px' }}>
+          <table style={{
+            width: '100%',
+            borderCollapse: 'collapse',
+            fontSize: '14px',
+            borderRadius: '8px',
+            overflow: 'hidden'
+          }}>
             <thead>
               <tr style={{ backgroundColor: '#f8f9fa' }}>
                 <th style={{ padding: '12px', textAlign: 'left', border: '1px solid #dee2e6', fontWeight: 'bold' }}>Token ID</th>
@@ -4471,14 +4589,14 @@ const TokenList = () => {
                   <td style={{ padding: '12px', border: '1px solid #dee2e6' }}>
                     <div style={{ fontWeight: 'bold' }}>{token.owner_username}</div>
                     {user?.role === 'admin' && token.user_id !== user.id && (
-                      <div style={{ fontSize: '11px', color: '#dc3545', fontWeight: 'bold' }}>CIZÍ</div>
+                      <div style={{ fontSize: '11px', color: 'var(--color-red)', fontWeight: 'bold' }}>CIZÍ</div>
                     )}
                   </td>
                   <td style={{ padding: '12px', border: '1px solid #dee2e6', textAlign: 'center' }}>
                     <span style={{ 
                       padding: '4px 8px', 
                       borderRadius: '12px',
-                      backgroundColor: getStatusColor(token.status),
+                      backgroundColor: token.status === 'active' ? 'var(--color-yellow)' : 'var(--color-green)',
                       color: 'white',
                       fontSize: '12px',
                       fontWeight: 'bold'
@@ -4533,7 +4651,7 @@ const TokenList = () => {
                          onClick={() => window.open(`/widget_${token.token_id}.html`, '_blank')}
                          style={{ 
                            padding: '4px 8px', 
-                           backgroundColor: '#28a745', 
+                           backgroundColor: '#', 
                            color: 'white', 
                            border: 'none', 
                            borderRadius: '3px',
@@ -4572,7 +4690,7 @@ const TokenList = () => {
                             onClick={() => handleToggleStatus(token.id, token.status)}
                             style={{ 
                               padding: '4px 8px', 
-                              backgroundColor: token.status === 'active' ? '#ffc107' : '#28a745',
+                              backgroundColor: token.status === 'active' ? 'var(--color-yellow)' : 'var(--color-green)',
                               color: token.status === 'active' ? 'black' : 'white',
                               border: 'none', 
                               borderRadius: '3px',
@@ -4589,7 +4707,7 @@ const TokenList = () => {
                             onClick={() => handleDeleteToken(token.id, token.token_id)}
                             style={{ 
                               padding: '4px 8px', 
-                              backgroundColor: '#dc3545', 
+                              backgroundColor: 'var(--color-red)', 
                               color: 'white', 
                               border: 'none', 
                               borderRadius: '3px',
@@ -4743,7 +4861,7 @@ const UserList = () => {
         <h2>Správa uživatelů</h2>
         <button 
           onClick={() => setShowCreateForm(true)}
-          style={{ padding: '8px 16px', backgroundColor: '#28a745', color: 'white', border: 'none', borderRadius: '4px' }}
+          style={{ padding: '8px 16px', backgroundColor: 'var(--color-green)', color: 'white', border: 'none', borderRadius: '4px' }}
         >
           Přidat uživatele
         </button>
@@ -4785,9 +4903,9 @@ const UserList = () => {
               <td style={{ padding: '12px', border: '1px solid #dee2e6' }}>
                 <span style={{ 
                   padding: '4px 8px', 
-                  borderRadius: '4px',
-                  backgroundColor: user.role === 'admin' ? '#dc3545' : '#007bff',
-                  color: 'white',
+                  borderRadius: '8px',
+                  backgroundColor: user.role === 'admin' ? 'var(--color-tag-bg-red)' : 'var(--color-tag-bg-green)',
+                  color: user.role === 'admin' ? '#B32222' : '#368537',
                   fontSize: '12px'
                 }}>
                   {user.role}
@@ -4805,7 +4923,7 @@ const UserList = () => {
                 </button>
                 <button 
                   onClick={() => handleDelete(user.id, user.username)}
-                  style={{ padding: '4px 8px', backgroundColor: '#dc3545', color: 'white', border: 'none', borderRadius: '3px' }}
+                  style={{ padding: '4px 8px', backgroundColor: 'var(--color-red)', color: 'white', border: 'none', borderRadius: '3px' }}
                 >
                   Smazat
                 </button>
@@ -4877,18 +4995,18 @@ const AuditLogs = () => {
 
   const getEventTypeColor = (eventType) => {
     const colors = {
-      'LOGIN': '#28a745',
-      'LOGOUT': '#6c757d',
-      'CREATE': '#007bff',
-      'UPDATE': '#ffc107',
-      'DELETE': '#dc3545',
+      'LOGIN': 'var(--color-green)',
+      'LOGOUT': 'var(--color-gray)',
+      'CREATE': 'var(--color-blue)',
+      'UPDATE': 'var(--color-yellow)',
+      'DELETE': 'var(--color-red)',
       'TOKEN_CREATE': '#17a2b8',
       'TOKEN_PAUSE': '#fd7e14',
       'TOKEN_RESUME': '#20c997',
       'TOKEN_DELETE': '#e83e8c',
       'SURVEY_DELIVERY': '#6f42c1'
     };
-    return colors[eventType] || '#6c757d';
+    return colors[eventType] || 'var(--color-gray)';
   };
 
   const formatEventDescription = (log) => {
@@ -4924,7 +5042,7 @@ const AuditLogs = () => {
 
   return (
     <div style={{ padding: '20px' }}>
-      <h2>Audit Logs</h2>
+      <h2>Záznamy</h2>
       <p style={{ color: '#6c757d', marginBottom: '20px' }}>
         Kompletní záznam všech aktivit v systému
       </p>
@@ -4946,7 +5064,7 @@ const AuditLogs = () => {
             <select
               value={filters.eventType}
               onChange={(e) => handleFilterChange('eventType', e.target.value)}
-              style={{ width: '100%', padding: '8px', border: '1px solid #ced4da', borderRadius: '4px' }}
+              style={{ width: '100%', padding: '8px', border: '1px solid #ced4da', borderRadius: '8px' }}
             >
               <option value="">Všechny</option>
               <option value="LOGIN">Přihlášení</option>
@@ -4970,7 +5088,8 @@ const AuditLogs = () => {
               type="date"
               value={filters.dateFrom}
               onChange={(e) => handleFilterChange('dateFrom', e.target.value)}
-              style={{ width: '100%', padding: '8px', border: '1px solid #ced4da', borderRadius: '4px' }}
+              placeholder="dd/mm/rrrr"
+              style={{ width: '100%', padding: '8px', border: '1px solid #ced4da', borderRadius: '8px' }}
             />
           </div>
 
@@ -4982,7 +5101,8 @@ const AuditLogs = () => {
               type="date"
               value={filters.dateTo}
               onChange={(e) => handleFilterChange('dateTo', e.target.value)}
-              style={{ width: '100%', padding: '8px', border: '1px solid #ced4da', borderRadius: '4px' }}
+              placeholder="dd/mm/rrrr"
+              style={{ width: '100%', padding: '8px', border: '1px solid #ced4da', borderRadius: '8px' }}
             />
           </div>
 
@@ -4995,7 +5115,7 @@ const AuditLogs = () => {
               value={filters.userId}
               onChange={(e) => handleFilterChange('userId', e.target.value)}
               placeholder="např. 1"
-              style={{ width: '100%', padding: '8px', border: '1px solid #ced4da', borderRadius: '4px' }}
+              style={{ width: '100%', padding: '8px', border: '1px solid #ced4da', borderRadius: '8px' }}
             />
           </div>
         </div>
@@ -5003,7 +5123,7 @@ const AuditLogs = () => {
         <div style={{ marginTop: '15px' }}>
           <button 
             onClick={() => setFilters({ eventType: '', userId: '', dateFrom: '', dateTo: '', page: 1, limit: 50 })}
-            style={{ padding: '8px 16px', backgroundColor: '#6c757d', color: 'white', border: 'none', borderRadius: '4px' }}
+            style={{ padding: '8px 16px', backgroundColor: '#6c757d', color: 'white', border: 'none' }}
           >
             Vymazat filtry
           </button>
@@ -5011,11 +5131,11 @@ const AuditLogs = () => {
       </div>
 
       {/* Logs Table */}
-      <div style={{ overflowX: 'auto' }}>
-        <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '14px' }}>
+      <div style={{ overflowX: 'auto'}}>
+        <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '14px', overflow: 'hidden'}}>
           <thead>
-            <tr style={{ backgroundColor: '#f8f9fa' }}>
-              <th style={{ padding: '12px', textAlign: 'left', border: '1px solid #dee2e6', minWidth: '150px' }}>Datum a čas</th>
+            <tr style={{ backgroundColor: '#f8f9fa'}}>
+              <th style={{ padding: '12px', textAlign: 'left', border: '1px solid #dee2e6', minWidth: '150px'}}>Datum a čas</th>
               <th style={{ padding: '12px', textAlign: 'left', border: '1px solid #dee2e6', minWidth: '80px' }}>Uživatel</th>
               <th style={{ padding: '12px', textAlign: 'left', border: '1px solid #dee2e6', minWidth: '120px' }}>Typ události</th>
               <th style={{ padding: '12px', textAlign: 'left', border: '1px solid #dee2e6', minWidth: '200px' }}>Popis</th>
@@ -5202,7 +5322,7 @@ const UserForm = ({ user, onSave, onCancel, onChange, title }) => {
         <div style={{ display: 'flex', gap: '10px' }}>
           <button 
             type="submit"
-            style={{ padding: '8px 16px', backgroundColor: '#007bff', color: 'white', border: 'none', borderRadius: '4px' }}
+            style={{ padding: '8px 16px', backgroundColor: 'var(--color-green)', color: 'white', border: 'none', borderRadius: '4px' }}
           >
             {user ? 'Uložit změny' : 'Vytvořit uživatele'}
           </button>
@@ -5257,88 +5377,64 @@ const Settings = () => {
   };
 
   return (
-    <div style={{ padding: '20px', maxWidth: '600px' }}>
-      <h2>Nastavení profilu</h2>
+    <div className="profile-form">
+      <h2>Nastavení</h2>
       <form onSubmit={handleSubmit}>
-        <div style={{ marginBottom: '20px' }}>
+        <div style={{ marginBottom: '28px' }}>
           <h3>Základní informace</h3>
-          
-          <div style={{ marginBottom: '15px' }}>
-            <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>
-              Uživatelské jméno
-            </label>
+          <div style={{ marginBottom: '18px' }}>
+            <label className="profile-label">Uživatelské jméno</label>
             <input
               type="text"
               value={formData.username}
               onChange={(e) => setFormData(prev => ({ ...prev, username: e.target.value }))}
-              style={{ width: '100%', padding: '8px', border: '1px solid #ced4da', borderRadius: '4px' }}
+              className="profile-input"
               required
             />
           </div>
-
-          <div style={{ marginBottom: '15px' }}>
-            <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>
-              Email
-            </label>
+          <div style={{ marginBottom: '18px' }}>
+            <label className="profile-label">Email</label>
             <input
               type="email"
               value={formData.email}
               onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
-              style={{ width: '100%', padding: '8px', border: '1px solid #ced4da', borderRadius: '4px' }}
+              className="profile-input"
               required
             />
           </div>
         </div>
-
-        <div style={{ marginBottom: '20px' }}>
+        <div style={{ marginBottom: '28px' }}>
           <h3>Změna hesla</h3>
-          <p style={{ color: '#6c757d', fontSize: '14px', marginBottom: '15px' }}>
-            Ponechte prázdné, pokud nechcete změnit heslo
-          </p>
-
-          <div style={{ marginBottom: '15px' }}>
-            <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>
-              Současné heslo
-            </label>
+          <p className="profile-hint">Ponechte prázdné, pokud nechcete změnit heslo</p>
+          <div style={{ marginBottom: '18px' }}>
+            <label className="profile-label">Současné heslo</label>
             <input
               type="password"
               value={formData.currentPassword}
               onChange={(e) => setFormData(prev => ({ ...prev, currentPassword: e.target.value }))}
-              style={{ width: '100%', padding: '8px', border: '1px solid #ced4da', borderRadius: '4px' }}
+              className="profile-input"
             />
           </div>
-
-          <div style={{ marginBottom: '15px' }}>
-            <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>
-              Nové heslo
-            </label>
+          <div style={{ marginBottom: '18px' }}>
+            <label className="profile-label">Nové heslo</label>
             <input
               type="password"
               value={formData.newPassword}
               onChange={(e) => setFormData(prev => ({ ...prev, newPassword: e.target.value }))}
-              style={{ width: '100%', padding: '8px', border: '1px solid #ced4da', borderRadius: '4px' }}
+              className="profile-input"
             />
           </div>
-
-          <div style={{ marginBottom: '15px' }}>
-            <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>
-              Potvrzení nového hesla
-            </label>
+          <div style={{ marginBottom: '18px' }}>
+            <label className="profile-label">Potvrzení nového hesla</label>
             <input
               type="password"
               value={formData.confirmPassword}
               onChange={(e) => setFormData(prev => ({ ...prev, confirmPassword: e.target.value }))}
-              style={{ width: '100%', padding: '8px', border: '1px solid #ced4da', borderRadius: '4px' }}
+              className="profile-input"
             />
           </div>
         </div>
-
-        <button 
-          type="submit"
-          style={{ padding: '10px 20px', backgroundColor: '#007bff', color: 'white', border: 'none', borderRadius: '4px' }}
-        >
-          Uložit změny
-        </button>
+        <button type="submit" className="button-confirm profile-save-btn">Uložit změny</button>
       </form>
     </div>
   );
@@ -5538,7 +5634,7 @@ const Statistics = () => {
           onClick={fetchStatistics}
           style={{ 
             padding: '10px 20px', 
-            backgroundColor: '#007bff', 
+            backgroundColor: 'var(--color-green)', 
             color: 'white', 
             border: 'none', 
             borderRadius: '4px' 
@@ -5706,7 +5802,7 @@ const Statistics = () => {
           onClick={fetchStatistics}
           style={{ 
             padding: '12px 24px', 
-            backgroundColor: '#28a745', 
+            backgroundColor: 'var(--color-green)', 
             color: 'white', 
             border: 'none', 
             borderRadius: '4px',
