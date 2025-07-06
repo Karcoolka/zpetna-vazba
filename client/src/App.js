@@ -992,15 +992,18 @@ const SurveyCreator = ({ editingSurveyId = null, globalMode = false }) => {
             <div style={{ 
               flex: 1,
               backgroundColor: 'white',
-              border: '2px solid #dee2e6',
+              border: '1px solid #dee2e6',
               borderRadius: '8px',
               minHeight: '500px',
-              position: 'relative'
+              position: 'relative',
+              overflow: 'hidden'
             }}>
               <div style={{ 
                 padding: '20px',
                 borderBottom: '1px solid #dee2e6',
-                backgroundColor: '#f8f9fa'
+                backgroundColor: '#f8f9fa',
+                borderTopLeftRadius: '8px',
+                borderTopRightRadius: '8px',
               }}>
                 <h4 style={{ margin: 0, color: '#495057' }}>
                   🎯 Oblast průzkumu
@@ -1054,6 +1057,7 @@ const SurveyCreator = ({ editingSurveyId = null, globalMode = false }) => {
               <button 
                 onClick={saveSurvey}
                 style={{ 
+                  marginRight: '5px',
                   position: 'relative',
                   padding: '12px 24px',
                   backgroundColor: 'var(--color-green)',
@@ -1066,11 +1070,11 @@ const SurveyCreator = ({ editingSurveyId = null, globalMode = false }) => {
               >
                 💾 Uložit globální sekce
               </button>
-            ) : (
               <button 
                 onClick={() => setCurrentStep(3)}
                 disabled={survey.cards.every(card => card.steps.length === 0)}
                 style={{ 
+                  marginLeft: '5px',
                   position: 'relative',
                   padding: '12px 24px',
                   backgroundColor: survey.cards.some(card => card.steps.length > 0) ? 'rgb(0, 123, 255)' : '#6c757d',
@@ -1083,7 +1087,6 @@ const SurveyCreator = ({ editingSurveyId = null, globalMode = false }) => {
               >
                 Náhled →
               </button>
-            )}
           </div>
         </div>
       )}
@@ -4055,29 +4058,33 @@ const SurveyList = () => {
           <table
             style={{
               width: '100%',
-              borderCollapse: 'collapse',
+              borderCollapse: 'separate',
+              borderSpacing: '0',
               fontSize: '14px',
-              border: '1.5px solid #dee2e6',
               borderRadius: '8px',
               overflow: 'hidden'
             }}
           >
             <thead>
               <tr style={{ backgroundColor: '#f8f9fa' }}>
-                <th style={{ padding: '12px', textAlign: 'left', minWidth: '150px', borderBottom: '1px solid #dee2e6' }}>Datum a čas</th>
-                <th style={{ padding: '12px', textAlign: 'left', borderBottom: '1px solid #dee2e6', fontWeight: 'bold' }}>Název</th>
-                <th style={{ padding: '12px', textAlign: 'left', borderBottom: '1px solid #dee2e6', fontWeight: 'bold' }}>Vlastník</th>
-                <th style={{ padding: '12px', textAlign: 'left', borderBottom: '1px solid #dee2e6', fontWeight: 'bold' }}>Status</th>
-                <th style={{ padding: '12px', textAlign: 'center', borderBottom: '1px solid #dee2e6', fontWeight: 'bold' }}>Aktivní tokeny</th>
-                <th style={{ padding: '12px', textAlign: 'left', borderBottom: '1px solid #dee2e6', fontWeight: 'bold' }}>Vytvořeno</th>
-                <th style={{ padding: '12px', textAlign: 'left', borderBottom: '1px solid #dee2e6', fontWeight: 'bold' }}>Upraveno</th>
-                <th style={{ padding: '12px', textAlign: 'center', borderBottom: '1px solid #dee2e6', fontWeight: 'bold' }}>Akce</th>
+                <th style={{ padding: '12px', textAlign: 'left', minWidth: '150px', borderTop: '1px solid #dee2e6', borderLeft: '1px solid #dee2e6', borderBottom: '1px solid #dee2e6', borderTopLeftRadius: '8px' }}>Datum a čas</th>
+                <th style={{ padding: '12px', textAlign: 'left', borderTop: '1px solid #dee2e6', borderBottom: '1px solid #dee2e6', fontWeight: 'bold' }}>Název</th>
+                <th style={{ padding: '12px', textAlign: 'left', borderTop: '1px solid #dee2e6', borderBottom: '1px solid #dee2e6', fontWeight: 'bold' }}>Vlastník</th>
+                <th style={{ padding: '12px', textAlign: 'left', borderTop: '1px solid #dee2e6', borderBottom: '1px solid #dee2e6', fontWeight: 'bold' }}>Status</th>
+                <th style={{ padding: '12px', textAlign: 'center', borderTop: '1px solid #dee2e6', borderBottom: '1px solid #dee2e6', fontWeight: 'bold' }}>Aktivní tokeny</th>
+                <th style={{ padding: '12px', textAlign: 'left', borderTop: '1px solid #dee2e6', borderBottom: '1px solid #dee2e6', fontWeight: 'bold' }}>Vytvořeno</th>
+                <th style={{ padding: '12px', textAlign: 'left', borderTop: '1px solid #dee2e6', borderBottom: '1px solid #dee2e6', fontWeight: 'bold' }}>Upraveno</th>
+                <th style={{ padding: '12px', textAlign: 'center', borderTop: '1px solid #dee2e6', borderRight: '1px solid #dee2e6', borderBottom: '1px solid #dee2e6', fontWeight: 'bold', borderTopRightRadius: '8px' }}>Akce</th>
               </tr>
             </thead>
             <tbody>
               {surveys.map((survey, idx) => (
                 <tr key={survey.id} style={{ backgroundColor: survey.id % 2 === 0 ? '#f9f9f9' : 'white' }}>
-                  <td style={{ padding: '12px', borderBottom: idx === surveys.length - 1 ? 'none' : '1px solid #dee2e6' }}>
+                  <td style={{ padding: '12px', 
+                  borderLeft: '1px solid #dee2e6',
+                  borderBottom: '1px solid #dee2e6',
+                  ...(idx === surveys.length - 1 && { borderBottomLeftRadius: '8px' })
+                  }}>
                     {new Date(survey.created_at).toLocaleString('cs-CZ')}
                     <div style={{ fontSize: '11px', color: '#6c757d' }}>
                       {new Date(survey.created_at).toLocaleTimeString('cs-CZ', {
@@ -4086,7 +4093,7 @@ const SurveyList = () => {
                       })}
                     </div>
                   </td>
-                  <td style={{ padding: '12px', borderBottom: idx === surveys.length - 1 ? 'none' : '1px solid #dee2e6' }}>
+                  <td style={{ padding: '12px', borderBottom: '1px solid #dee2e6' }}>
                     <div style={{ fontWeight: 'bold', marginBottom: '4px' }}>{survey.title}</div>
                     {survey.description && (
                       <div style={{ fontSize: '12px', color: '#6c757d', maxWidth: '200px', overflow: 'hidden', textOverflow: 'ellipsis' }}>
@@ -4094,13 +4101,13 @@ const SurveyList = () => {
                       </div>
                     )}
                   </td>
-                  <td style={{ padding: '12px', borderBottom: idx === surveys.length - 1 ? 'none' : '1px solid #dee2e6' }}>
+                  <td style={{ padding: '12px', borderBottom: '1px solid #dee2e6' }}>
                     <div style={{ fontWeight: 'bold' }}>{survey.owner_username}</div>
                     {user?.role === 'admin' && survey.user_id !== user.id && (
                       <div style={{ fontSize: '11px', color: 'var(--color-red)', fontWeight: 'bold' }}>CIZÍ</div>
                     )}
                   </td>
-                  <td style={{ padding: '12px', borderBottom: idx === surveys.length - 1 ? 'none' : '1px solid #dee2e6' }}>
+                  <td style={{ padding: '12px', borderBottom: '1px solid #dee2e6' }}>
                     <span style={{ 
                       padding: '4px 8px', 
                       borderRadius: '8px',
@@ -4112,7 +4119,7 @@ const SurveyList = () => {
                       {getStatusText(survey.status)}
                     </span>
                   </td>
-                  <td style={{ padding: '12px', borderBottom: idx === surveys.length - 1 ? 'none' : '1px solid #dee2e6', textAlign: 'center' }}>
+                  <td style={{ padding: '12px', borderBottom: '1px solid #dee2e6', textAlign: 'center' }}>
                     {survey.is_active ? (
                       <span style={{ 
                         padding: '4px 8px', 
@@ -4140,7 +4147,7 @@ const SurveyList = () => {
                       {survey.token_count || 0} tokenů
                     </div>
                   </td>
-                  <td style={{ padding: '12px', borderBottom: idx === surveys.length - 1 ? 'none' : '1px solid #dee2e6', fontSize: '13px' }}>
+                  <td style={{ padding: '12px', borderBottom: '1px solid #dee2e6', fontSize: '13px' }}>
                     {new Date(survey.created_at).toLocaleDateString('cs-CZ', {
                       day: '2-digit',
                       month: '2-digit',
@@ -4153,7 +4160,7 @@ const SurveyList = () => {
                       })}
                     </div>
                   </td>
-                  <td style={{ padding: '12px', borderBottom: idx === surveys.length - 1 ? 'none' : '1px solid #dee2e6', fontSize: '13px' }}>
+                  <td style={{ padding: '12px', borderBottom: '1px solid #dee2e6', fontSize: '13px' }}>
                     {new Date(survey.updated_at).toLocaleDateString('cs-CZ', {
                       day: '2-digit',
                       month: '2-digit',
@@ -4166,7 +4173,13 @@ const SurveyList = () => {
                       })}
                     </div>
                   </td>
-                  <td style={{ padding: '12px', borderBottom: idx === surveys.length - 1 ? 'none' : '1px solid #dee2e6', textAlign: 'center' }}>
+                  <td style={{ 
+                    padding: '12px', 
+                    borderRight: '1px solid #dee2e6',
+                    borderBottom: '1px solid #dee2e6', 
+                    textAlign: 'center',
+                    ...(idx === surveys.length - 1 && { borderBottomRightRadius: '8px' })
+                  }}>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', alignItems: 'center' }}>
                       {(user?.role === 'admin' || survey.user_id === user?.id) && (
                         <>
@@ -4552,27 +4565,33 @@ const TokenList = () => {
         <div style={{ overflowX: 'auto', borderRadius: '8px' }}>
           <table style={{
             width: '100%',
-            borderCollapse: 'collapse',
+            borderCollapse: 'separate',
+            borderSpacing: '0',
             fontSize: '14px',
             borderRadius: '8px',
             overflow: 'hidden'
           }}>
             <thead>
               <tr style={{ backgroundColor: '#f8f9fa' }}>
-                <th style={{ padding: '12px', textAlign: 'left', border: '1px solid #dee2e6', fontWeight: 'bold' }}>Token ID</th>
-                <th style={{ padding: '12px', textAlign: 'left', border: '1px solid #dee2e6', fontWeight: 'bold' }}>Dotazník</th>
-                <th style={{ padding: '12px', textAlign: 'left', border: '1px solid #dee2e6', fontWeight: 'bold' }}>Vlastník</th>
-                <th style={{ padding: '12px', textAlign: 'center', border: '1px solid #dee2e6', fontWeight: 'bold' }}>Status</th>
-                <th style={{ padding: '12px', textAlign: 'left', border: '1px solid #dee2e6', fontWeight: 'bold' }}>Platnost</th>
-                <th style={{ padding: '12px', textAlign: 'left', border: '1px solid #dee2e6', fontWeight: 'bold' }}>Embed kód</th>
-                <th style={{ padding: '12px', textAlign: 'center', border: '1px solid #dee2e6', fontWeight: 'bold' }}>Statistiky</th>
-                <th style={{ padding: '12px', textAlign: 'center', border: '1px solid #dee2e6', fontWeight: 'bold' }}>Akce</th>
+                <th style={{ padding: '12px', textAlign: 'left', borderTop: '1px solid #dee2e6', borderLeft: '1px solid #dee2e6', borderBottom: '1px solid #dee2e6', fontWeight: 'bold', borderTopLeftRadius: '8px' }}>Token ID</th>
+                <th style={{ padding: '12px', textAlign: 'left', borderTop: '1px solid #dee2e6', borderBottom: '1px solid #dee2e6', fontWeight: 'bold' }}>Dotazník</th>
+                <th style={{ padding: '12px', textAlign: 'left', borderTop: '1px solid #dee2e6', borderBottom: '1px solid #dee2e6', fontWeight: 'bold' }}>Vlastník</th>
+                <th style={{ padding: '12px', textAlign: 'center', borderTop: '1px solid #dee2e6', borderBottom: '1px solid #dee2e6', fontWeight: 'bold' }}>Status</th>
+                <th style={{ padding: '12px', textAlign: 'left', borderTop: '1px solid #dee2e6', borderBottom: '1px solid #dee2e6', fontWeight: 'bold' }}>Platnost</th>
+                <th style={{ padding: '12px', textAlign: 'left', borderTop: '1px solid #dee2e6', borderBottom: '1px solid #dee2e6', fontWeight: 'bold' }}>Embed kód</th>
+                <th style={{ padding: '12px', textAlign: 'center', borderTop: '1px solid #dee2e6', borderBottom: '1px solid #dee2e6', fontWeight: 'bold' }}>Statistiky</th>
+                <th style={{ padding: '12px', textAlign: 'center', borderTop: '1px solid #dee2e6', borderRight: '1px solid #dee2e6', borderBottom: '1px solid #dee2e6', fontWeight: 'bold', borderTopRightRadius: '8px' }}>Akce</th>
               </tr>
             </thead>
             <tbody>
-              {tokens.map(token => (
+              {tokens.map((token, idx) => (
                 <tr key={token.id} style={{ backgroundColor: token.id % 2 === 0 ? '#f9f9f9' : 'white' }}>
-                  <td style={{ padding: '12px', border: '1px solid #dee2e6' }}>
+                  <td style={{ 
+                    padding: '12px', 
+                    borderLeft: '1px solid #dee2e6',
+                    borderBottom: '1px solid #dee2e6',
+                    ...(idx === tokens.length - 1 && { borderBottomLeftRadius: '8px' })
+                  }}>
                     <code style={{ 
                       backgroundColor: '#f8f9fa', 
                       padding: '2px 4px', 
@@ -4582,29 +4601,29 @@ const TokenList = () => {
                       {token.token_id}
                     </code>
                   </td>
-                  <td style={{ padding: '12px', border: '1px solid #dee2e6' }}>
+                  <td style={{ padding: '12px', borderBottom: '1px solid #dee2e6' }}>
                     <div style={{ fontWeight: 'bold' }}>{token.survey_title}</div>
                     <div style={{ fontSize: '12px', color: '#6c757d' }}>ID: {token.survey_id}</div>
                   </td>
-                  <td style={{ padding: '12px', border: '1px solid #dee2e6' }}>
+                  <td style={{ padding: '12px', borderBottom: '1px solid #dee2e6' }}>
                     <div style={{ fontWeight: 'bold' }}>{token.owner_username}</div>
                     {user?.role === 'admin' && token.user_id !== user.id && (
                       <div style={{ fontSize: '11px', color: 'var(--color-red)', fontWeight: 'bold' }}>CIZÍ</div>
                     )}
                   </td>
-                  <td style={{ padding: '12px', border: '1px solid #dee2e6', textAlign: 'center' }}>
+                  <td style={{ padding: '12px', borderBottom: '1px solid #dee2e6', textAlign: 'center' }}>
                     <span style={{ 
                       padding: '4px 8px', 
-                      borderRadius: '12px',
-                      backgroundColor: token.status === 'active' ? 'var(--color-yellow)' : 'var(--color-green)',
-                      color: 'white',
+                      borderRadius: '8px',
+                      backgroundColor: token.status === 'active' ? 'var(--color-tag-bg-green)' : 'var(--color-tag-bg-yellow)',
+                      color: token.status === 'active' ? 'var(--color-tag-text-green)' : 'var(--color-tag-text-yellow)',
                       fontSize: '12px',
                       fontWeight: 'bold'
                     }}>
                       {getStatusText(token.status)}
                     </span>
                   </td>
-                  <td style={{ padding: '12px', border: '1px solid #dee2e6', fontSize: '13px' }}>
+                  <td style={{ padding: '12px', borderBottom: '1px solid #dee2e6', fontSize: '13px' }}>
                     {token.valid_from && (
                       <div>
                         <strong>Od:</strong> {new Date(token.valid_from).toLocaleDateString('cs-CZ')}
@@ -4619,7 +4638,7 @@ const TokenList = () => {
                       <span style={{ color: '#6c757d', fontStyle: 'italic' }}>Bez omezení</span>
                     )}
                   </td>
-                  <td style={{ padding: '12px', border: '1px solid #dee2e6' }}>
+                  <td style={{ padding: '12px', borderBottom: '1px solid #dee2e6' }}>
                     <div style={{ 
                       backgroundColor: '#f8f9fa', 
                       border: '1px solid #dee2e6', 
@@ -4651,7 +4670,7 @@ const TokenList = () => {
                          onClick={() => window.open(`/widget_${token.token_id}.html`, '_blank')}
                          style={{ 
                            padding: '4px 8px', 
-                           backgroundColor: '#', 
+                           backgroundColor: 'var(--color-tag-bg-gray)', 
                            color: 'white', 
                            border: 'none', 
                            borderRadius: '3px',
@@ -4664,7 +4683,7 @@ const TokenList = () => {
                        </button>
                      </div>
                   </td>
-                  <td style={{ padding: '12px', border: '1px solid #dee2e6', textAlign: 'center' }}>
+                  <td style={{ padding: '12px', borderBottom: '1px solid #dee2e6', textAlign: 'center' }}>
                     <button 
                       onClick={() => window.open(`/statistics/${token.survey_id}`, '_blank')}
                       style={{ 
@@ -4682,7 +4701,13 @@ const TokenList = () => {
                       📊 Statistiky
                     </button>
                   </td>
-                  <td style={{ padding: '12px', border: '1px solid #dee2e6', textAlign: 'center' }}>
+                  <td style={{ 
+                    padding: '12px', 
+                    borderRight: '1px solid #dee2e6',
+                    borderBottom: '1px solid #dee2e6', 
+                    textAlign: 'center',
+                    ...(idx === tokens.length - 1 && { borderBottomRightRadius: '8px' })
+                  }}>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', alignItems: 'center' }}>
                       {(user?.role === 'admin' || token.user_id === user?.id) && (
                         <>
@@ -4885,22 +4910,34 @@ const UserList = () => {
         />
       )}
 
-      <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: '20px' }}>
+      <table style={{ 
+        width: '100%', 
+        borderCollapse: 'separate', 
+        borderSpacing: '0',
+        marginTop: '20px', 
+        borderRadius: '8px',
+        overflow: 'hidden'
+      }}>
         <thead>
           <tr style={{ backgroundColor: '#f8f9fa' }}>
-            <th style={{ padding: '12px', textAlign: 'left', border: '1px solid #dee2e6' }}>Uživatelské jméno</th>
-            <th style={{ padding: '12px', textAlign: 'left', border: '1px solid #dee2e6' }}>Email</th>
-            <th style={{ padding: '12px', textAlign: 'left', border: '1px solid #dee2e6' }}>Role</th>
-            <th style={{ padding: '12px', textAlign: 'left', border: '1px solid #dee2e6' }}>Vytvořeno</th>
-            <th style={{ padding: '12px', textAlign: 'left', border: '1px solid #dee2e6' }}>Akce</th>
+            <th style={{ padding: '12px', textAlign: 'left', borderTop: '1px solid #dee2e6', borderLeft: '1px solid #dee2e6', borderBottom: '1px solid #dee2e6', fontWeight: 'bold', borderTopLeftRadius: '8px' }}>Uživatelské jméno</th>
+            <th style={{ padding: '12px', textAlign: 'left', borderTop: '1px solid #dee2e6', borderBottom: '1px solid #dee2e6', fontWeight: 'bold' }}>Email</th>
+            <th style={{ padding: '12px', textAlign: 'left', borderTop: '1px solid #dee2e6', borderBottom: '1px solid #dee2e6', fontWeight: 'bold' }}>Role</th>
+            <th style={{ padding: '12px', textAlign: 'left', borderTop: '1px solid #dee2e6', borderBottom: '1px solid #dee2e6', fontWeight: 'bold' }}>Vytvořeno</th>
+            <th style={{ padding: '12px', textAlign: 'left', borderTop: '1px solid #dee2e6', borderRight: '1px solid #dee2e6', borderBottom: '1px solid #dee2e6', fontWeight: 'bold', borderTopRightRadius: '8px' }}>Akce</th>
           </tr>
         </thead>
         <tbody>
-          {users.map(user => (
+          {users.map((user, idx) => (
             <tr key={user.id}>
-              <td style={{ padding: '12px', border: '1px solid #dee2e6' }}>{user.username}</td>
-              <td style={{ padding: '12px', border: '1px solid #dee2e6' }}>{user.email}</td>
-              <td style={{ padding: '12px', border: '1px solid #dee2e6' }}>
+              <td style={{ 
+                padding: '12px', 
+                borderLeft: '1px solid #dee2e6',
+                borderBottom: '1px solid #dee2e6',
+                ...(idx === users.length - 1 && { borderBottomLeftRadius: '8px' })
+              }}>{user.username}</td>
+              <td style={{ padding: '12px', borderBottom: '1px solid #dee2e6' }}>{user.email}</td>
+              <td style={{ padding: '12px', borderBottom: '1px solid #dee2e6' }}>
                 <span style={{ 
                   padding: '4px 8px', 
                   borderRadius: '8px',
@@ -4911,10 +4948,15 @@ const UserList = () => {
                   {user.role}
                 </span>
               </td>
-              <td style={{ padding: '12px', border: '1px solid #dee2e6' }}>
+              <td style={{ padding: '12px', borderBottom: '1px solid #dee2e6' }}>
                 {new Date(user.created_at).toLocaleDateString('cs-CZ')}
               </td>
-              <td style={{ padding: '12px', border: '1px solid #dee2e6' }}>
+              <td style={{ 
+                padding: '12px', 
+                borderRight: '1px solid #dee2e6',
+                borderBottom: '1px solid #dee2e6',
+                ...(idx === users.length - 1 && { borderBottomRightRadius: '8px' })
+              }}>
                 <button 
                   onClick={() => handleEdit(user)}
                   style={{ padding: '4px 8px', marginRight: '8px', backgroundColor: '#ffc107', border: 'none', borderRadius: '3px' }}
@@ -5131,28 +5173,49 @@ const AuditLogs = () => {
       </div>
 
       {/* Logs Table */}
-      <div style={{ overflowX: 'auto'}}>
-        <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '14px', overflow: 'hidden'}}>
+      <div style={{ overflowX: 'auto', borderRadius: '8px'}}>
+        <table style={{ 
+          width: '100%', 
+          borderCollapse: 'separate', 
+          borderSpacing: '0',
+          fontSize: '14px', 
+          borderRadius: '8px',
+          overflow: 'hidden'
+        }}>
           <thead>
             <tr style={{ backgroundColor: '#f8f9fa'}}>
-              <th style={{ padding: '12px', textAlign: 'left', border: '1px solid #dee2e6', minWidth: '150px'}}>Datum a čas</th>
-              <th style={{ padding: '12px', textAlign: 'left', border: '1px solid #dee2e6', minWidth: '80px' }}>Uživatel</th>
-              <th style={{ padding: '12px', textAlign: 'left', border: '1px solid #dee2e6', minWidth: '120px' }}>Typ události</th>
-              <th style={{ padding: '12px', textAlign: 'left', border: '1px solid #dee2e6', minWidth: '200px' }}>Popis</th>
-              <th style={{ padding: '12px', textAlign: 'left', border: '1px solid #dee2e6', minWidth: '120px' }}>IP adresa</th>
-              <th style={{ padding: '12px', textAlign: 'left', border: '1px solid #dee2e6', minWidth: '150px' }}>User Agent</th>
+              <th style={{ padding: '12px', textAlign: 'left', borderTop: '1px solid #dee2e6', borderLeft: '1px solid #dee2e6', borderBottom: '1px solid #dee2e6', borderRight: '1px solid #dee2e6', minWidth: '150px', fontWeight: 'bold', borderTopLeftRadius: '8px'}}>Datum a čas</th>
+              <th style={{ padding: '12px', textAlign: 'left', borderTop: '1px solid #dee2e6', borderBottom: '1px solid #dee2e6', borderRight: '1px solid #dee2e6', minWidth: '80px', fontWeight: 'bold' }}>Uživatel</th>
+              <th style={{ padding: '12px', textAlign: 'left', borderTop: '1px solid #dee2e6', borderBottom: '1px solid #dee2e6', borderRight: '1px solid #dee2e6', minWidth: '120px', fontWeight: 'bold' }}>Typ události</th>
+              <th style={{ padding: '12px', textAlign: 'left', borderTop: '1px solid #dee2e6', borderBottom: '1px solid #dee2e6', borderRight: '1px solid #dee2e6', minWidth: '200px', fontWeight: 'bold' }}>Popis</th>
+              <th style={{ padding: '12px', textAlign: 'left', borderTop: '1px solid #dee2e6', borderBottom: '1px solid #dee2e6', borderRight: '1px solid #dee2e6', minWidth: '120px', fontWeight: 'bold' }}>IP adresa</th>
+              <th style={{ padding: '12px', textAlign: 'left', borderTop: '1px solid #dee2e6', borderBottom: '1px solid #dee2e6', borderRight: '1px solid #dee2e6', minWidth: '150px', fontWeight: 'bold', borderTopRightRadius: '8px' }}>User Agent</th>
             </tr>
           </thead>
           <tbody>
-            {logs.map(log => (
-              <tr key={log.id} style={{ borderBottom: '1px solid #dee2e6' }}>
-                <td style={{ padding: '12px', border: '1px solid #dee2e6' }}>
+            {logs.map((log, idx) => (
+              <tr key={log.id}>
+                <td style={{ 
+                  padding: '12px', 
+                  borderLeft: '1px solid #dee2e6',
+                  borderBottom: '1px solid #dee2e6',
+                  borderRight: '1px solid #dee2e6',
+                  ...(idx === logs.length - 1 && { borderBottomLeftRadius: '8px' })
+                }}>
                   {new Date(log.timestamp).toLocaleString('cs-CZ')}
                 </td>
-                <td style={{ padding: '12px', border: '1px solid #dee2e6' }}>
+                <td style={{ 
+                  padding: '12px', 
+                  borderBottom: '1px solid #dee2e6',
+                  borderRight: '1px solid #dee2e6'
+                }}>
                   {log.username || log.user_id || 'N/A'}
                 </td>
-                <td style={{ padding: '12px', border: '1px solid #dee2e6' }}>
+                <td style={{ 
+                  padding: '12px', 
+                  borderBottom: '1px solid #dee2e6',
+                  borderRight: '1px solid #dee2e6'
+                }}>
                   <span style={{ 
                     padding: '4px 8px', 
                     borderRadius: '4px',
@@ -5164,7 +5227,11 @@ const AuditLogs = () => {
                     {log.action}
                   </span>
                 </td>
-                <td style={{ padding: '12px', border: '1px solid #dee2e6' }}>
+                <td style={{ 
+                  padding: '12px', 
+                  borderBottom: '1px solid #dee2e6',
+                  borderRight: '1px solid #dee2e6'
+                }}>
                   {formatEventDescription(log)}
                   {log.details && (
                     <div style={{ fontSize: '12px', color: '#6c757d', marginTop: '4px' }}>
@@ -5172,10 +5239,22 @@ const AuditLogs = () => {
                     </div>
                   )}
                 </td>
-                <td style={{ padding: '12px', border: '1px solid #dee2e6', fontFamily: 'monospace' }}>
+                <td style={{ 
+                  padding: '12px', 
+                  borderBottom: '1px solid #dee2e6',
+                  borderRight: '1px solid #dee2e6',
+                  fontFamily: 'monospace'
+                }}>
                   {log.ip_address || 'N/A'}
                 </td>
-                <td style={{ padding: '12px', border: '1px solid #dee2e6', fontSize: '12px', color: '#6c757d' }}>
+                <td style={{ 
+                  padding: '12px', 
+                  borderBottom: '1px solid #dee2e6',
+                  borderRight: '1px solid #dee2e6',
+                  fontSize: '12px', 
+                  color: '#6c757d',
+                  ...(idx === logs.length - 1 && { borderBottomRightRadius: '8px' })
+                }}>
                   {log.user_agent ? log.user_agent.substring(0, 50) + (log.user_agent.length > 50 ? '...' : '') : 'N/A'}
                 </td>
               </tr>
